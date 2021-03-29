@@ -26,6 +26,8 @@
 
 import sys
 
+import tkinter as tk
+
 import usb.core
 import usb.util
 
@@ -139,8 +141,51 @@ Not yet implemented:
 		else:
 			print('invalid')
 
+class Application(tk.Frame):
+	def __init__(self, master=None):
+		super().__init__(master)
+		self.master = master
+		self.pack()
+		self.create_widgets()
+
+	def create_widgets(self):
+		controlBtnsContainer = tk.Frame(self)
+		controlCodeButtons = [
+			# x, y, text, command
+			(0, 0, 'On', 'turnOn'),
+			(0, 1, 'Off', 'turnOff'),
+			(1, 0, 'Color 1', 'set1'),
+			(1, 1, 'Color 2', 'set2'),
+			(1, 2, 'Color 3', 'set3'),
+			(1, 3, 'Color 4', 'set4'),
+			(2, 0, 'Peaceful', 'setPeaceful'),
+			(2, 1, 'Dynamic', 'setDynamic'),
+			(2, 2, 'Video Sync', 'setVideoSync'),
+		]
+		for btnDef in controlCodeButtons:
+			btn = tk.Button(controlBtnsContainer)
+			btn['text'] = btnDef[2]
+			# closure hack because python sucks
+			btn['command'] = lambda btnDef=btnDef: sendControlCode(btnDef[3])
+			btn.grid(row=btnDef[0], column=btnDef[1])
+		controlBtnsContainer.pack(side='top')
+
+		spacer = tk.Label(self)
+		spacer.pack(side='top')
+
+		# brightness buttons
+		brightnessBtnsContainer = tk.Frame(self)
+		for i in range(1, 13):
+			btn = tk.Button(brightnessBtnsContainer)
+			btn['text'] = str(i)
+			btn['command'] = lambda i=i: sendBrightnessCode(i)
+			btn.grid(row=3, column=i)
+		brightnessBtnsContainer.pack(side='top')
+
 def launchGui():
-	print('gui')
+	root = tk.Tk()
+	app = Application(master=root)
+	app.mainloop()
 
 if ('gui' in sys.argv[0].lower()) or (len(sys.argv) > 1 and 'gui' in sys.argv[1].lower()):
 	launchGui()
