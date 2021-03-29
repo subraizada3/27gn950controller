@@ -114,6 +114,9 @@ def sendBrightnessCode(brt):
 	part3 = '4544000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
 	sendStr(part1 + part2_1 + part2_2 + part3)
 
+def sendRawStr(code):
+	sendStr(code)
+
 while True:
 	try:
 		code = input().strip()
@@ -126,5 +129,7 @@ while True:
 		print(helpstring)
 	elif len(code) <= 2:
 		sendBrightnessCode(int(code))
+	elif len(code) == 128:
+		sendRawStr(code)
 	else:
 		sendControlCode(code)
