@@ -4,8 +4,14 @@ Requires Python 3 and pyusb library:
   `pip3 install pyusb`, or use the python-pyusb package on Arch Linux
 
 Usage:
+  To get a command line interface, do:
   $ sudo ./control.py
   Enter 'h' for help / command reference
+
+  To get a GUI, do:
+  $ sudo ./gui.py
+  or
+  $ sudo ./control.py gui
 
 
 To control the main monitor brightness (of the screen) you can use the standard
