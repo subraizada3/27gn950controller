@@ -23,20 +23,6 @@
 # TODO: allow sending a single command (not interactive) with `./control.py 57`
 # TODO: organize separation between command line control and API
 
-helpstring = '''Command reference:
-Exit: q / exit / EOF / ctrl-c
-Help: h / help / ?
-Commands:
-  1-12                   - set brightness
-  turnOn turnOff         - turn LEDs on or off
-  set1 set2 set3 set4    - activate a preset slot
-  setPeaceful setDynamic - builtin RGB cycle modes
-  setVideoSync           - swap to video sync mode; sync itself is not implemented yet
-Not yet implemented:
-  Changing RGB colors saved into the 1/2/3/4 slots
-  Syncing video after entering video sync mode\
-'''
-
 
 import sys
 
@@ -117,19 +103,46 @@ def sendBrightnessCode(brt):
 def sendRawStr(code):
 	sendStr(code)
 
-while True:
-	try:
-		code = input().strip()
-	except KeyboardInterrupt as e:
-		print()
-		sys.exit(0)
-	if code == '' or code == 'q' or code == 'exit':
-		sys.exit(0)
-	elif code == 'h' or code == 'help' or code == '?':
-		print(helpstring)
-	elif len(code) <= 2:
-		sendBrightnessCode(int(code))
-	elif len(code) == 128:
-		sendRawStr(code)
-	else:
-		sendControlCode(code)
+def launchCli():
+	helpstring = '''Command reference:
+Exit: q / exit / EOF / ctrl-c
+Help: h / help / ?
+Commands:
+  1-12                   - set brightness
+  turnOn turnOff         - turn LEDs on or off
+  set1 set2 set3 set4    - activate a preset slot
+  setPeaceful setDynamic - builtin RGB cycle modes
+  setVideoSync           - swap to video sync mode; sync itself is not implemented yet
+Not yet implemented:
+  Changing RGB colors saved into the 1/2/3/4 slots
+  Syncing video after entering video sync mode\
+'''
+
+	while True:
+		try:
+			code = input().strip()
+		except KeyboardInterrupt as e:
+			print()
+			sys.exit(0)
+		except EOFError as e:
+			sys.exit(0)
+		if code == '' or code == 'q' or code == 'exit':
+			sys.exit(0)
+		elif code == 'h' or code == 'help' or code == '?':
+			print(helpstring)
+		elif len(code) <= 2:
+			sendBrightnessCode(int(code))
+		elif len(code) == 128:
+			sendRawStr(code)
+		elif code in controlCodes.keys():
+			sendControlCode(code)
+		else:
+			print('invalid')
+
+def launchGui():
+	print('gui')
+
+if ('gui' in sys.argv[0].lower()) or (len(sys.argv) > 1 and 'gui' in sys.argv[1].lower()):
+	launchGui()
+else:
+	launchCli()
