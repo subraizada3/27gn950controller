@@ -31,9 +31,10 @@ Commands:
   turnOn turnOff         - turn LEDs on or off
   set1 set2 set3 set4    - activate a preset slot
   setPeaceful setDynamic - builtin RGB cycle modes
+  setVideoSync           - swap to video sync mode; sync itself is not implemented yet
 Not yet implemented:
   Changing RGB colors saved into the 1/2/3/4 slots
-  Video sync mode\
+  Syncing video after entering video sync mode\
 '''
 
 
@@ -69,16 +70,17 @@ def sendInt(data):
 
 
 controlCodes = {
-	'turnOn':      ('e01020000.d', 'f02020100.e'),
-	'turnOff':     ('e01020000.d', 'f02020200.d'),
-	'set1':        ('702020001.6', 'a02020301.8'),
-	'set2':        ('702020002.5', 'a02020302.b'),
-	'set3':        ('702020003.4', 'a02020303.a'),
-	'set4':        ('702020004.3', 'a02020304.d'),
-	'setPeaceful': ('702020005.2', 'a02020305.c'),
-	'setDynamic':  ('702020006.1', 'a02020306.f'),
-	'macroY':      ('801020000.b', 'e01020000.d'), # unused
-	'macroX':      ('b01020000.8', 'c01020000.f'), # unused
+	'turnOn':       ('e01020000.d', 'f02020100.e'),
+	'turnOff':      ('e01020000.d', 'f02020200.d'),
+	'set1':         ('702020001.6', 'a02020301.8'),
+	'set2':         ('702020002.5', 'a02020302.b'),
+	'set3':         ('702020003.4', 'a02020303.a'),
+	'set4':         ('702020004.3', 'a02020304.d'),
+	'setPeaceful':  ('702020005.2', 'a02020305.c'),
+	'setDynamic':   ('702020006.1', 'a02020306.f'),
+	'setVideoSync': ('702020008.f', 'a02020308.1'),
+	'macroY':       ('801020000.b', 'e01020000.d'), # unused
+	'macroX':       ('b01020000.8', 'c01020000.f'), # unused
 }
 
 def sendControlCode(code):
