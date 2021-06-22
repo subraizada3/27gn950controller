@@ -25,6 +25,7 @@
 
 
 import sys
+import platform
 
 import tkinter as tk
 
@@ -37,13 +38,14 @@ if dev is None:
 	print('Device not found')
 	sys.exit(0)
 
-for cfg in dev:
-	for intf in cfg:
-		if dev.is_kernel_driver_active(intf.bInterfaceNumber):
-			try:
-				dev.detach_kernel_driver(intf.bInterfaceNumber)
-			except usb.core.USBError as e:
-				sys.exit('Cound not detach kernel driver from interface ({0}): {1}'.format(intf.bInterfaceNumber, str(e)))
+if platform.system() == 'Linux':
+	for cfg in dev:
+		for intf in cfg:
+			if dev.is_kernel_driver_active(intf.bInterfaceNumber):
+				try:
+					dev.detach_kernel_driver(intf.bInterfaceNumber)
+				except usb.core.USBError as e:
+					sys.exit('Cound not detach kernel driver from interface ({0}): {1}'.format(intf.bInterfaceNumber, str(e)))
 
 dev.set_configuration()
 cfg = dev.get_active_configuration()
