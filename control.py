@@ -63,8 +63,20 @@ if platform.system() == 'Linux':
 						sys.exit('Cound not detach kernel driver from interface ({0}): {1}'.format(intf.bInterfaceNumber, str(e)))
 
 for dev in devices:
+	print(dev)
+	print()
+	print('Printing active configuration')
+	print(dev.get_active_configuration())
+	print()
 	dev.set_configuration()
 	cfg = dev.get_active_configuration() # TODO: is this necessary? cfg is unused.
+	print('Printing configuration again')
+	print(cfg)
+	print()
+	print()
+	print()
+	print()
+	print()
 
 # functions to send commands to device
 def sendStr(data, devnum):
