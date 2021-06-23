@@ -5,7 +5,7 @@ This program lets you control the bias lighting LEDs on the LG 27GN950 monitor u
 
 This requires Python 3 and the PyUSB library as dependencies.
 
-For Windows, full setup instructions are available [here](https://github.com/subraizada3/27gn950controller/blob/master/windows-setup.md).
+For Windows, full setup instructions are available [here](https://github.com/subraizada3/27gn950controller/blob/master/docs/windows-setup.md).
 
 Linux setup: Install the PyUSB library for Python: `sudo pip3 install pyusb`. You'll also need the `libusb` library on your system. There's a very high chance you already have libusb installed, but if not, you should be able to install through your package manager (apt/dnf/etc.). On Arch Linux you can simply install the `python-pyusb` and `libusb` packages with Pacman; no other setup is required.
 
@@ -14,13 +14,13 @@ MacOS: Setup should be very similar to Linux, but the exact commands you have to
 ### Usage
 
 On Linux, and probably also Mac:
-- You will need to run every command with `sudo` unless you [add a udev rule](https://github.com/subraizada3/27gn950controller/blob/master/udev-setup.md).
+- You will need to run every command with `sudo` unless you [add a udev rule](https://github.com/subraizada3/27gn950controller/blob/master/docs/udev-setup.md).
 - To get a command line interface, do: `./control.py`
   - Enter 'h' for help / command reference
 - To get a GUI, do: `./gui.py` or `./control.py gui`
-  - If you download a zip from GitHub instead of doing a git clone, the gui.py file/shortcut will not work. You can either:
-    - run the gui as `./control.py gui`, or
-    - fix the shortcut by deleting gui.py and then making a copy of the control.py file named gui.py (the script will detect the filename and launch the gui instead of the cli)
+  - If you download a zip from GitHub instead of doing a git clone, the gui.py file/shortcut will not work properly. You can either:
+    - Run the gui as `./control.py gui`, or
+    - Fix the shortcut: delete gui.py; then make a copy of the control.py file named gui.py. Now you can run gui.py to get the gui.
 
 On Windows:
 - To get a command line interface, you can either:
