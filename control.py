@@ -61,6 +61,7 @@ def sendInt(data, devnum):
 	if devnum == 'all':
 		_devices = devices
 	else:
+		devnum = int(devnum)
 		if devnum >= len(devices):
 			print('This monitor does not exist')
 			return
@@ -183,6 +184,17 @@ class Application(tk.Frame):
 		self.create_widgets()
 
 	def create_widgets(self):
+		tk.Label(self, text = f'Found {len(devices)} monitors').pack(side='top')
+		tk.Label(self, text = "Enter the word 'all' or the monitor number (e.g. 0, 1, 2)").pack(side='top')
+
+		deviceStr = tk.StringVar()
+		deviceEntry = tk.Entry(self, textvariable=deviceStr)
+		deviceStr.set("all")
+		deviceEntry.pack(side='top')
+
+		spacer = tk.Label(self)
+		spacer.pack(side='top')
+
 		controlBtnsContainer = tk.Frame(self)
 		controlCodeButtons = [
 			# x, y, text, command
@@ -200,7 +212,7 @@ class Application(tk.Frame):
 			btn = tk.Button(controlBtnsContainer)
 			btn['text'] = btnDef[2]
 			# closure hack because python sucks
-			btn['command'] = lambda btnDef=btnDef: sendControlCode(btnDef[3], 'all')
+			btn['command'] = lambda btnDef=btnDef: sendControlCode(btnDef[3], deviceStr.get())
 			btn.grid(row=btnDef[0], column=btnDef[1])
 		controlBtnsContainer.pack(side='top')
 
@@ -212,7 +224,7 @@ class Application(tk.Frame):
 		for i in range(1, 13):
 			btn = tk.Button(brightnessBtnsContainer)
 			btn['text'] = str(i)
-			btn['command'] = lambda i=i: sendBrightnessCode(i, 'all')
+			btn['command'] = lambda i=i: sendBrightnessCode(i, deviceStr.get())
 			btn.grid(row=3, column=i)
 		brightnessBtnsContainer.pack(side='top')
 
