@@ -2,7 +2,7 @@ This program lets you control the bias lighting LEDs on the LG 27gn950 monitor u
 
 It requires Python 3 and the pyusb library as dependencies: `pip3 install pyusb`, or use the `python-pyusb` package on Arch Linux
 
-On Windows, you will also need to install the libusb backend for the PyUSB library. Full setup instructions here: https://github.com/subraizada3/27gn950controller/issues/2#issuecomment-866204669
+On Windows, you will also need to install the libusb backend for the PyUSB library. Full setup instructions [here](https://github.com/subraizada3/27gn950controller/blob/master/windows-setup.md).
 
 
 Usage on Linux, and probably also Mac:
