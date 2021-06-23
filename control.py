@@ -33,32 +33,44 @@ import usb.core
 import usb.util
 
 
-dev = usb.core.find(idVendor=0x043e, idProduct = 0x9a8a)
-if dev is None:
+devices = list(usb.core.find(idVendor=0x043e, idProduct=0x9a8a, find_all=True))
+if (devices is None) or (len(devices) == 0):
 	print('Device not found')
 	sys.exit(0)
 
+# on Linux, unbind all other things using this USB device (otherwise this script doesn't work)
 if platform.system() == 'Linux':
-	for cfg in dev:
-		for intf in cfg:
-			if dev.is_kernel_driver_active(intf.bInterfaceNumber):
-				try:
-					dev.detach_kernel_driver(intf.bInterfaceNumber)
-				except usb.core.USBError as e:
-					sys.exit('Cound not detach kernel driver from interface ({0}): {1}'.format(intf.bInterfaceNumber, str(e)))
+	for dev in devices:
+		for cfg in dev:
+			for intf in cfg:
+				if dev.is_kernel_driver_active(intf.bInterfaceNumber):
+					try:
+						dev.detach_kernel_driver(intf.bInterfaceNumber)
+					except usb.core.USBError as e:
+						sys.exit('Cound not detach kernel driver from interface ({0}): {1}'.format(intf.bInterfaceNumber, str(e)))
 
-dev.set_configuration()
-cfg = dev.get_active_configuration()
+for dev in devices:
+	dev.set_configuration()
+	cfg = dev.get_active_configuration() # TODO: is this necessary? cfg is unused.
 
-# send commands to device
-def sendStr(data):
-	sendInt(int(data, 16))
+# functions to send commands to device
+def sendStr(data, devnum):
+	sendInt(int(data, 16), devnum)
 
-def sendInt(data):
-	dev.write(2, data.to_bytes(64, byteorder='big'))
+def sendInt(data, devnum):
+	if devnum == 'all':
+		_devices = devices
+	else:
+		if devnum >= len(devices):
+			print('This monitor does not exist')
+			return
+		_devices = [devices[devnum]]
+	for dev in _devices:
+		dev.write(2, data.to_bytes(64, byteorder='big'))
 
 
 
+# wrapper functions around sendStr/sendInt which perform actions
 controlCodes = {
 	'turnOn':       ('e01020000.d', 'f02020100.e'),
 	'turnOff':      ('e01020000.d', 'f02020200.d'),
@@ -73,15 +85,15 @@ controlCodes = {
 	'macroX':       ('b01020000.8', 'c01020000.f'), # unused
 }
 
-def sendControlCode(code):
+def sendControlCode(code, devnum):
 	part1 = '5343c'
 	part3 = '4544000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
 	part2_1 = controlCodes[code][0].replace('.', 'd')
 	part2_2 = controlCodes[code][1].replace('.', 'd')
-	sendStr(part1 + part2_1 + part3)
-	sendStr(part1 + part2_2 + part3)
+	sendStr(part1 + part2_1 + part3, devnum)
+	sendStr(part1 + part2_2 + part3, devnum)
 
-def sendBrightnessCode(brt):
+def sendBrightnessCode(brt, devnum):
 	if brt < 1 or brt > 12:
 		return
 	part1 = '5343c'
@@ -102,12 +114,17 @@ def sendBrightnessCode(brt):
 	}
 	part2_2 = brts[brt].replace('.', 'd')
 	part3 = '4544000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	sendStr(part1 + part2_1 + part2_2 + part3)
+	sendStr(part1 + part2_1 + part2_2 + part3, devnum)
 
-def sendRawStr(code):
-	sendStr(code)
+def sendRawStr(code, devnum):
+	sendStr(code, devnum)
+
+
+
+
 
 def launchCli():
+	print(f'Found {len(devices)} monitors')
 	helpstring = '''Command reference:
 Exit: q / exit / EOF / ctrl-c
 Help: h / help / ?
@@ -123,25 +140,40 @@ Not yet implemented:
 '''
 
 	while True:
+		# get input, handle ctrl-c and ctrl-d
 		try:
-			code = input().strip()
+			_code = input().strip()
 		except KeyboardInterrupt as e:
 			print()
 			sys.exit(0)
 		except EOFError as e:
 			sys.exit(0)
+
+		# parse the device ID out, if it exists
+		devnum = 'all'
+		codeparts = _code.split(',')
+		if len(codeparts) == 1:
+			code = codeparts[0].strip()
+		else:
+			devnum = int(codeparts[0].strip())
+			code = codeparts[1].strip()
+
 		if code == '' or code == 'q' or code == 'exit':
 			sys.exit(0)
 		elif code == 'h' or code == 'help' or code == '?':
 			print(helpstring)
 		elif len(code) <= 2:
-			sendBrightnessCode(int(code))
+			sendBrightnessCode(int(code), devnum)
 		elif len(code) == 128:
-			sendRawStr(code)
+			sendRawStr(code, devnum)
 		elif code in controlCodes.keys():
-			sendControlCode(code)
+			sendControlCode(code, devnum)
 		else:
 			print('invalid')
+
+
+
+
 
 class Application(tk.Frame):
 	def __init__(self, master=None):
@@ -168,7 +200,7 @@ class Application(tk.Frame):
 			btn = tk.Button(controlBtnsContainer)
 			btn['text'] = btnDef[2]
 			# closure hack because python sucks
-			btn['command'] = lambda btnDef=btnDef: sendControlCode(btnDef[3])
+			btn['command'] = lambda btnDef=btnDef: sendControlCode(btnDef[3], 'all')
 			btn.grid(row=btnDef[0], column=btnDef[1])
 		controlBtnsContainer.pack(side='top')
 
@@ -180,7 +212,7 @@ class Application(tk.Frame):
 		for i in range(1, 13):
 			btn = tk.Button(brightnessBtnsContainer)
 			btn['text'] = str(i)
-			btn['command'] = lambda i=i: sendBrightnessCode(i)
+			btn['command'] = lambda i=i: sendBrightnessCode(i, 'all')
 			btn.grid(row=3, column=i)
 		brightnessBtnsContainer.pack(side='top')
 
@@ -188,6 +220,10 @@ def launchGui():
 	root = tk.Tk()
 	app = Application(master=root)
 	app.mainloop()
+
+
+
+
 
 if ('gui' in sys.argv[0].lower()) or (len(sys.argv) > 1 and 'gui' in sys.argv[1].lower()):
 	launchGui()
