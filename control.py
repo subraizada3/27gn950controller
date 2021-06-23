@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# TODO: allow sending a single command (not interactive) with `./control.py 57`
 # TODO: organize separation between command line control and API
 
 
@@ -124,6 +123,30 @@ def sendRawStr(code, devnum):
 
 
 
+def cliProcess(text):
+		# parse the device ID out, if it exists
+		devnum = 'all'
+		textparts = text.split(',')
+		if len(textparts) == 1:
+			cmd = textparts[0].strip()
+		else:
+			devnum = int(textparts[0].strip())
+			cmd = textparts[1].strip()
+
+		if cmd == '' or cmd == 'q' or cmd == 'exit':
+			sys.exit(0)
+		elif cmd == 'h' or cmd == 'help' or cmd == '?':
+			print(helpstring)
+		elif len(cmd) <= 2:
+			sendBrightnessCode(int(cmd), devnum)
+		elif len(cmd) == 128:
+			sendRawStr(cmd, devnum)
+		elif cmd in controlCodes.keys():
+			sendControlCode(cmd, devnum)
+		else:
+			print('invalid command')
+
+
 def launchCli():
 	print(f'Found {len(devices)} monitors')
 	helpstring = '''Command reference:
@@ -141,36 +164,14 @@ Not yet implemented:
 '''
 
 	while True:
-		# get input, handle ctrl-c and ctrl-d
 		try:
-			_code = input().strip()
+			text = input().strip()
 		except KeyboardInterrupt as e:
 			print()
 			sys.exit(0)
 		except EOFError as e:
 			sys.exit(0)
-
-		# parse the device ID out, if it exists
-		devnum = 'all'
-		codeparts = _code.split(',')
-		if len(codeparts) == 1:
-			code = codeparts[0].strip()
-		else:
-			devnum = int(codeparts[0].strip())
-			code = codeparts[1].strip()
-
-		if code == '' or code == 'q' or code == 'exit':
-			sys.exit(0)
-		elif code == 'h' or code == 'help' or code == '?':
-			print(helpstring)
-		elif len(code) <= 2:
-			sendBrightnessCode(int(code), devnum)
-		elif len(code) == 128:
-			sendRawStr(code, devnum)
-		elif code in controlCodes.keys():
-			sendControlCode(code, devnum)
-		else:
-			print('invalid')
+		cliProcess(text)
 
 
 
@@ -240,4 +241,7 @@ def launchGui():
 if ('gui' in sys.argv[0].lower()) or (len(sys.argv) > 1 and 'gui' in sys.argv[1].lower()):
 	launchGui()
 else:
-	launchCli()
+	if len(sys.argv) == 1:
+		launchCli()
+	else:
+		cliProcess(sys.argv[1])
