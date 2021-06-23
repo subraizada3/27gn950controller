@@ -31,6 +31,20 @@ import tkinter as tk
 import usb.core
 import usb.util
 
+cli_helpstring = '''Command reference:
+Exit: q / exit / EOF / ctrl-c
+Help: h / help / ?
+Commands:
+  1-12                   - set brightness
+  turnOn turnOff         - turn LEDs on or off
+  set1 set2 set3 set4    - activate a preset slot
+  setPeaceful setDynamic - builtin RGB cycle modes
+  setVideoSync           - swap to video sync mode; sync itself is not implemented yet
+Not yet implemented:
+  Changing RGB colors saved into the 1/2/3/4 slots
+  Syncing video after entering video sync mode\
+'''
+
 
 devices = list(usb.core.find(idVendor=0x043e, idProduct=0x9a8a, find_all=True))
 if (devices is None) or (len(devices) == 0):
@@ -136,7 +150,7 @@ def cliProcess(text):
 		if cmd == '' or cmd == 'q' or cmd == 'exit':
 			sys.exit(0)
 		elif cmd == 'h' or cmd == 'help' or cmd == '?':
-			print(helpstring)
+			print(cli_helpstring)
 		elif len(cmd) <= 2:
 			sendBrightnessCode(int(cmd), devnum)
 		elif len(cmd) == 128:
@@ -149,20 +163,6 @@ def cliProcess(text):
 
 def launchCli():
 	print(f'Found {len(devices)} monitors')
-	helpstring = '''Command reference:
-Exit: q / exit / EOF / ctrl-c
-Help: h / help / ?
-Commands:
-  1-12                   - set brightness
-  turnOn turnOff         - turn LEDs on or off
-  set1 set2 set3 set4    - activate a preset slot
-  setPeaceful setDynamic - builtin RGB cycle modes
-  setVideoSync           - swap to video sync mode; sync itself is not implemented yet
-Not yet implemented:
-  Changing RGB colors saved into the 1/2/3/4 slots
-  Syncing video after entering video sync mode\
-'''
-
 	while True:
 		try:
 			text = input().strip()
