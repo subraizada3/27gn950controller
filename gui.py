@@ -31,11 +31,11 @@ class Gui(QWidget):
 
 		powerbuttonslayout = QGridLayout(self)
 		powerbuttonslayout.addWidget(QLabel('<b>Power</b>'), 0, 0, 1, 2)
-		x = QPushButton('Turn on')
-		x.clicked.connect(self.turn_on)
-		powerbuttonslayout.addWidget(x, 1, 0)
 		x = QPushButton('Turn off')
 		x.clicked.connect(self.turn_off)
+		powerbuttonslayout.addWidget(x, 1, 0)
+		x = QPushButton('Turn on')
+		x.clicked.connect(self.turn_on)
 		powerbuttonslayout.addWidget(x, 1, 1)
 		mainLayout.addLayout(powerbuttonslayout)
 
