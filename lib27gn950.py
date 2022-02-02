@@ -208,7 +208,8 @@ def send_video_sync_data(colors, dev):
 	# generate the full command
 	cmd = '5343c1029100'
 	cmd += ''.join(colors)
-	cmd += 'ff4544' # TODO: calculate checksum instead of using ff
+	cmd += calc_crc(cmd)
+	cmd += '4544'
 
 	# split into three 64 byte (128 char) commands
 	cmd1 = cmd[:128]
