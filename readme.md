@@ -14,7 +14,7 @@ This project also provides a library that other applications can use to control 
 | OS | Normal controls | Multi-monitor | GUI | Video sync |
 |----|-----------------|---------------|-----|------------|
 | Linux | Functional | Untested | Functional | In development |
-| Windows | Functional | Untested | Untested | In development |
+| Windows | Functional | Untested | Functional | In development |
 | macOS | Functional | Untested | Untested | In development |
 
 'Untested' means that it should work. But I only have a single 27GN950 and don't have an Apple computer. If you are able to get this program to successfully work under untested situations, please open an issue and report your success so that this document can be updated.
@@ -58,7 +58,7 @@ On other Linuxes and macOS:
 - To get a command line interface, do: `sudo ./console.py`
   - Enter `help` for help / command reference
 - To get a graphical interface, do: `sudo ./gui.py`
-- On Windows, you can just double click on the console.py or the gui.py file to run them.
+- On Windows, you can just double click on `console.py` or `gui.pyw` (gui.pyw is the same as gui.py, but it won't open a command prompt window on Windows)
 
 To control the monitor brightness (of the screen, not the bias lighting), see:
   https://www.subraizada.com/blog/ddc/
