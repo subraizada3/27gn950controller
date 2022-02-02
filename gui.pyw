@@ -73,27 +73,15 @@ class Gui(QWidget):
 		editbuttonslayout.addWidget(QLabel('<b>Edit static colors</b>'), 0, 0, 1, 4)
 		x = QLabel('Enter new color: ')
 		editbuttonslayout.addWidget(x, 1, 0, 1, 2)
-		self.colorInputBox = QLineEdit()
+		self.colorInputBox = QLineEdit('27e5ff')
 		self.colorInputBox.textChanged.connect(self.validate_new_color)
 		editbuttonslayout.addWidget(self.colorInputBox, 1, 2, 1, 2)
-		self.colorValidationOutputBox = QLabel('Your entry is: invalid')
+		self.colorValidationOutputBox = QLabel('Your entry is: valid')
 		editbuttonslayout.addWidget(self.colorValidationOutputBox, 2, 0, 1, 4)
 		for i in range(4):
 			x = QPushButton(f'Set {i+1}')
 			x.clicked.connect(lambda _, i=i: self.set_color(i+1))
 			editbuttonslayout.addWidget(x, 3, i)
-		import textwrap
-		x = QLabel(textwrap.dedent('''
-			Enter a lowercase RGB hex string, where each R/G/B is one of:
-			  00   20   40   80   a0   c0   e0   ff
-			Corresponding to decimal values:
-			  00   32   64  128  160  192  224  255
-
-			One R/G/B channel must be ff and one must be 00.
-			The other channel can be anything.
-			The only exception is that white (ffffff) is allowed.\
-		'''))
-		editbuttonslayout.addWidget(x, 4, 0, 1, 4)
 		mainLayout.addLayout(editbuttonslayout)
 
 
@@ -124,11 +112,13 @@ class Gui(QWidget):
 				dev.close()
 
 
+	def is_valid_color(self, color):
+		return re.match('^[0-9a-f]{6}$', color)
+
 	def validate_new_color(self, text):
-		if text in lib27gn950.valid_colors:
-			self.colorValidationOutputBox.setText('Your entry is: valid')
-		else:
-			self.colorValidationOutputBox.setText('Your entry is: invalid')
+		s = 'Your entry is: '
+		s += 'valid' if self.is_valid_color(text.lower()) else 'invalid'
+		self.colorValidationOutputBox.setText(s)
 
 
 	def update_selection(self, monitor_num, checked):
@@ -167,8 +157,8 @@ class Gui(QWidget):
 		self.send_command(cmd)
 
 	def set_color(self, slot):
-		color = self.colorInputBox.text()
-		if color not in lib27gn950.valid_colors:
+		color = self.colorInputBox.text().lower()
+		if not self.is_valid_color(color):
 			return
 		cmd = lib27gn950.get_set_color_command(slot, color)
 		self.send_command(cmd)

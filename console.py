@@ -46,9 +46,9 @@ Valid commands:
   set
     Set the color saved in one of the static color slots
     Arguments: slot number, color
-    The color argument must be provided as a lowercase hex string
-    Command example: set 2 ff0080
-    See lib27gn950.py for documentation on valid colors
+    The color argument must be provided as a 6 character (3 byte RGB) hex string
+    Command example:
+      set 2 ff2b83
 
   <128 character hex string>
     Send a raw command, entered as a 128-char hex string (representing 64 bytes)
@@ -87,7 +87,7 @@ def get_selected_devs():
 def cli():
 	while True:
 		try:
-			text = input(': ').strip()
+			text = input(': ').lower().strip()
 			cli_process_line(text)
 		except KeyboardInterrupt as e:
 			print()
@@ -99,7 +99,7 @@ def cli():
 def noninteractive():
 	global selected
 
-	cmd = ' '.join(sys.argv[1:]).strip()
+	cmd = ' '.join([x.lower() for x in sys.argv[1:]]).strip()
 	selection = []
 
 	try:
@@ -152,9 +152,6 @@ def cli_process_line(text):
 		parts = text.split()
 		slot = int(parts[1])
 		color = parts[2]
-		if color not in lib27gn950.valid_colors:
-			print('Invalid color')
-			return
 		lib27gn950.send_command(lib27gn950.get_set_color_command(slot, color), get_selected_devs())
 
 	elif text in ['info']:

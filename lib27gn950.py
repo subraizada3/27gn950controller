@@ -74,7 +74,7 @@ import hid
 # get_set_color_command(slot, color)
 #   Get the command to set the color for a static color slot
 #   `slot` must be an integer in the range [1..4]
-#   `color` must be a valid color string (described below)
+#   `color` must be a color string (described below)
 #   Example:
 #     Set static color slot 2 to a bluish red, with a bit of green mixed in
 #     send_command(get_set_color_command(2, 'ff20e0', dev))
@@ -89,32 +89,8 @@ import hid
 #
 # Color strings:
 #   The monitor acceps colors in the  8-bit RGB format (the usual (0,0,0) to
-#     (255,255,255). However, only a limited subset of colors are usable, it
-#     doesn't have a full 8 bits of values per channel. Instead, each channel
-#     must be one of 8 values:
-#
-#   Decimal:  0, 32, 64, 128, 160, 192, 224, 255
-#   Hex:     00, 20, 40,  80,  a0,  c0,  e0,  ff
-#
-#   Colors must be provided as a lowercase RGB hex string.
-#
-#   Additionally, the colors are further limited. One channel must always be
-#     0xff. And with the sole exception of white (ffffff), it is invalid to make
-#     all three channels nonzero. In other words, all valid colors except white
-#     conform to this format:
-#       One channel is 0xff
-#       Another channel is anything
-#       The third channel is 0x00
-#
-#   Examples:
-#     ff0000: valid: one channel is 0xff, one is 0x00, one is anything
-#     00ffff: valid: one channel is 0xff, one is 0x00, one is anything
-#     e000ff: valid: one channel is 0xff, one is 0x00, one is anything
-#     e000e0: invalid: no channel is 0xff
-#     e020ff: invalid: cannot have nonzero values in all three channels
-#     ffffff: valid: white is the only exception to the above rule
-#
-#   `valid_colors` is a list of all the 44 valid color strings.
+#     (255,255,255). Colors must be provided as a lowercase RGB hex string,
+#     such as 'ffffff' or 'a0e27b'.
 
 ################################################################################
 
@@ -152,8 +128,6 @@ brightness_commands = {
 def get_set_color_command(slot, color):
 	if slot not in [1,2,3,4]:
 		raise ValueError('get_set_color_command: slot must be an integer in the range [1..4]')
-	if color not in valid_colors:
-		raise ValueError('get_set_color_command: invalid color')
 
 	cmd_data = f'0{slot}{color}'
 	cmd = 'd0204' + cmd_data
@@ -205,9 +179,6 @@ def send_command(cmd, dev):
 def send_video_sync_data(colors, dev):
 	if len(colors) != 48:
 		raise ValueError('send_video_sync_data: must provide 48 colors')
-	for color in colors:
-		if color not in valid_colors:
-			raise ValueError('send_video_sync_data: invalid color')
 
 	# generate the full command
 	cmd = '5343c1029100'
@@ -239,27 +210,6 @@ def send_str(s, dev):
 	else:
 		i = int(s, 16)
 		dev.write(i.to_bytes(64, byteorder='big'))
-
-
-################################################################################
-################################################################################
-
-
-valid_colors = [
-	# reds, part 1
-	'ff0000', 'ff0020', 'ff0040', 'ff0080', 'ff00a0', 'ff00c0', 'ff00e0',
-	'ff00ff', # red-blue
-	# blues
-	'e000ff', 'c000ff', 'a000ff', '8000ff', '4000ff', '2000ff', '0000ff', '0020ff', '0040ff', '0080ff', '00a0ff', '00c0ff', '00e0ff',
-	'00ffff', # blue-green
-	# greens
-	'00ffe0', '00ffc0', '00ffa0', '00ff80', '00ff40', '00ff20', '00ff00', '20ff00', '40ff00', '80ff00', 'a0ff00', 'c0ff00', 'e0ff00',
-	'ffff00', # red-green
-	# reds, part 2
-	'ffe000', 'ffc000', 'ffa000', 'ff8000', 'ff4000', 'ff2000', 'ff0000',
-	# white
-	'ffffff'
-]
 
 
 ################################################################################
