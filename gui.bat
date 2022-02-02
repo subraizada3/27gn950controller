@@ -1,1 +1,0 @@
-python control.py gui
