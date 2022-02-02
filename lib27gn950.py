@@ -231,8 +231,14 @@ def send_video_sync_data(colors, dev):
 
 def send_str(s, dev):
 	# s should be a 128-character hex string (representing 64 bytes)
-	i = int(s, 16)
-	dev.write(i.to_bytes(64, byteorder='big'))
+
+	if 'Windows' in platform.system():
+		# work around a hidapi bug in Windows which drops the first byte
+		i = int('00'+s, 16)
+		dev.write(i.to_bytes(65, byteorder='big'))
+	else:
+		i = int(s, 16)
+		dev.write(i.to_bytes(64, byteorder='big'))
 
 
 ################################################################################
