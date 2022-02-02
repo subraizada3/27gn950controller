@@ -1,55 +1,64 @@
-This program lets you control the bias lighting LEDs on the LG 27GN950 monitor, without needing to use the official LG software. This program has no affiliation with LG.
+This program lets you control the bias lighting LEDs on the LG 27GN950 monitor without needing to use the official LG software. This program has no affiliation with LG.
 
-This program supports all functionality of the official LG software, except for video sync mode, which is currently under development.
+This program has the following benefits:
+- it supports controlling multiple monitors
+- it works on Linux and macOS
+- it's lightweight, fast, and has a good UI
 
-This program can also control multiple 27GN950 monitors connected to your system.
+Video sync is currenty in development. All other functionality is supported.
 
 This project also provides a library that other applications can use to control 27GN950 monitors. See the `lib27gn950.py` file for details and documentation.
 
 ### Current status
 
-This project previously provided a graphical application that could be used to control the monitor. After the recent v2 rewrite (which added support for video sync mode to the backend library, and added macOS support) the GUI needs to be re-made for the new codebase.
-
 | OS | Normal controls | Multi-monitor | GUI | Video sync |
 |----|-----------------|---------------|-----|------------|
-| Linux | Functional | Untested, but should work | In development | In development |
-| Windows | Functional | Untested, but should work | In development | In development |
-| macOS | Untested, but should work | Untested, but should work | In development | In development |
+| Linux | Functional | Untested | Functional | In development |
+| Windows | Functional | Untested | Untested | In development |
+| macOS | Functional | Untested | Untested | In development |
+
+'Untested' means that it should work. But I only have a single 27GN950 and don't have an Apple computer. If you are able to get this program to successfully work under untested situations, please open an issue and report your success so that this document can be updated.
 
 ### Setup
 
 This requires Python 3, the Python HID package, and the HIDAPI library as dependencies.
 
-##### Linux
-On Arch Linux: `sudo pacman -S hidapi python-hid`
+##### Linux and macOS
 
-On other Linuxes:
+On Arch Linux:
+- `sudo pacman -S hidapi python-hid python-pyqt5`
+- Go to the 'Usage' section below
+
+On other Linuxes and macOS:
+- On macOS only, install Python 3 from [python.org/downloads](https://www.python.org/downloads/)
 - Install the Python HID package, for your user and root:
   - `pip3 install --user hid`
   - `sudo pip3 install --user hid`
-- Install the HIDAPI library. See https://pypi.org/project/hid/ for commands for various distributions.
+- For the GUI, install the Python PyQt5 package:
+  - `pip3 install --user pyqt5`
+  - `sudo pip3 install --user pyqt5`
+- Install the HIDAPI library:
+  - Ubuntu: `sudo apt install hidapi`
+  - Fedora: `sudo dnf install hidapi`
+  - macOS: `brew install hidapi`
+- Go to the 'Usage' section below
 
 ##### Windows
 - The HIDAPI dll is included in this repository, so you don't have to install it separately.
 - Install Python from [python.org/downloads](https://www.python.org/downloads/). When installing, make sure to check the checkbox for the 'Add Python to PATH' option on the bottom of the initial screen, and then click the 'Disable path length limit' button at the end of the installation.
 - Install the Python HID library by opening Windows PowerShell and running:
   - `py -m pip install hid`
-- Download this repository, extract the zip file, open the folder and double click on `console.py`
-  - Make sure the LG software isn't running at the same time
-  - Type 'help' for a list of commands
-
-##### MacOS (untested, I don't have an Apple computer):
-- Install the HIDAPI library
-  - `brew install hidapi`
-- Install the Python HID package
-  - `pip3 install --user hid`
-  - `sudo pip3 install --user hid`
+- For the GUI, install the Python PyQt5 package:
+  - `py -m pip install pyqt5`
+- Note: if you use Command Prompt instead of PowerShell, run `pip install` instead of `py -m pip install`
+- Go to the 'Usage' section below
 
 ### Usage
 
 - To get a command line interface, do: `sudo ./console.py`
   - Enter `help` for help / command reference
-- The GUI needs to be recreated for the new codebase (TODO)
+- To get a graphical interface, do: `sudo ./gui.py`
+- On Windows, you can just double click on the console.py or the gui.py file to run them.
 
 To control the monitor brightness (of the screen, not the bias lighting), see:
   https://www.subraizada.com/blog/ddc/
@@ -57,7 +66,9 @@ To control the monitor brightness (of the screen, not the bias lighting), see:
 ### Multimonitor
 
 Multimonitor support:
-- By default, all monitors will be controlled. You can manually specify which monitors you want to control using the `info` and `select` commands in the command line interface.
+- By default, all monitors will be controlled.
+- In the console interface, you can manually specify which monitors you want to control using the `info` and `select` commands in the command line interface.
+- In the GUI interface, there are checkboxes to select which monitors to control.
 
 ### Noninteractive mode / automation
 
