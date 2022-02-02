@@ -1,12 +1,20 @@
 This program lets you control the bias lighting LEDs on the LG 27GN950 monitor, without needing to use the official LG software. This program has no affiliation with LG.
 
-This program previously ran under Linux and Windows. It has recently been rewritten to add new functionality, and the new version works on Linux but is (currently) untested on Windows. The new version should also work on macOS, but is untested.
-
-This program supports all functionality of the official LG software except for video sync mode. The code for video sync is implemented, but checksum calculation still needs to be figured out - see [issue #7](https://github.com/subraizada3/27gn950controller/issues/7).
+This program supports all functionality of the official LG software, except for video sync mode, which is currently under development.
 
 This program can also control multiple 27GN950 monitors connected to your system.
 
 This project also provides a library that other applications can use to control 27GN950 monitors. See the `lib27gn950.py` file for details and documentation.
+
+### Current status
+
+This program previously was verified to work on Linux and Windows. In addition to a command line interface, there was a graphical application that could be used to control the monitor. After the recent v2 rewrite (which added support for video sync mode to the backend library, and added macOS support) the GUI needs to be re-made for the new codebase, and the application needs to be tested again on Windows.
+
+| OS | Normal controls | Multi-monitor | GUI | Video sync |
+|----|-----------------|---------------|-----|------------|
+| Linux | Functional | Untested, but should work | In development | In development |
+| Windows | Untested, but should work | Untested, but should work | In development | In development |
+| macOS | Untested, but should work | Untested, but should work | In development | In development |
 
 ### Setup
 
