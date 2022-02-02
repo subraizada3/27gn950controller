@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+import os, platform, ctypes
+if 'Windows' in platform.system():
+	ctypes.windll.LoadLibrary(os.path.dirname(os.path.abspath(__file__)) + os.path.sep + 'hidapi.dll')
+
 import hid
 # https://pypi.org/project/hid/
 # https://github.com/apmorton/pyhidapi

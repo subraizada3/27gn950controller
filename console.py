@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
+import lib27gn950
+
 import hid
 # https://pypi.org/project/hid/
 # https://github.com/apmorton/pyhidapi
-
-import lib27gn950
 
 import re
 import sys
