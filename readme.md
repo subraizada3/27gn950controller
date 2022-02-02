@@ -8,12 +8,12 @@ This project also provides a library that other applications can use to control 
 
 ### Current status
 
-This program previously was verified to work on Linux and Windows. In addition to a command line interface, there was a graphical application that could be used to control the monitor. After the recent v2 rewrite (which added support for video sync mode to the backend library, and added macOS support) the GUI needs to be re-made for the new codebase, and the application needs to be tested again on Windows.
+This project previously provided a graphical application that could be used to control the monitor. After the recent v2 rewrite (which added support for video sync mode to the backend library, and added macOS support) the GUI needs to be re-made for the new codebase.
 
 | OS | Normal controls | Multi-monitor | GUI | Video sync |
 |----|-----------------|---------------|-----|------------|
 | Linux | Functional | Untested, but should work | In development | In development |
-| Windows | Untested, but should work | Untested, but should work | In development | In development |
+| Windows | Functional | Untested, but should work | In development | In development |
 | macOS | Untested, but should work | Untested, but should work | In development | In development |
 
 ### Setup
@@ -30,7 +30,12 @@ On other Linuxes:
 - Install the HIDAPI library. See https://pypi.org/project/hid/ for commands for various distributions.
 
 ##### Windows
-- full setup instructions need to be recreated for the new version of the program. (TODO)
+- The HIDAPI dll is included in this repository, so you don't have to install it separately.
+- Install Python from [python.org/downloads](https://www.python.org/downloads/). When installing, make sure to check the checkbox for the 'Add Python to PATH' option, and select the 'Increase path length limit' option at the end of the installation.
+- Install the Python HID library by opening Windows PowerShell and running:
+  - `py -m pip install hid`
+- Download this repository, open the folder, double click on `console.py`
+  - Make sure the LG software isn't running at the same time
 
 ##### MacOS (untested, I don't have an Apple computer):
 - Install the HIDAPI library
