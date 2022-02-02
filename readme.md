@@ -31,11 +31,12 @@ On other Linuxes:
 
 ##### Windows
 - The HIDAPI dll is included in this repository, so you don't have to install it separately.
-- Install Python from [python.org/downloads](https://www.python.org/downloads/). When installing, make sure to check the checkbox for the 'Add Python to PATH' option, and select the 'Increase path length limit' option at the end of the installation.
+- Install Python from [python.org/downloads](https://www.python.org/downloads/). When installing, make sure to check the checkbox for the 'Add Python to PATH' option on the bottom of the initial screen, and then click the 'Disable path length limit' button at the end of the installation.
 - Install the Python HID library by opening Windows PowerShell and running:
   - `py -m pip install hid`
-- Download this repository, open the folder, double click on `console.py`
+- Download this repository, extract the zip file, open the folder and double click on `console.py`
   - Make sure the LG software isn't running at the same time
+  - Type 'help' for a list of commands
 
 ##### MacOS (untested, I don't have an Apple computer):
 - Install the HIDAPI library
@@ -49,8 +50,6 @@ On other Linuxes:
 - To get a command line interface, do: `sudo ./console.py`
   - Enter `help` for help / command reference
 - The GUI needs to be recreated for the new codebase (TODO)
-
-Windows usage instructions need to be recreated (TODO)
 
 To control the monitor brightness (of the screen, not the bias lighting), see:
   https://www.subraizada.com/blog/ddc/
