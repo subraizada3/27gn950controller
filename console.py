@@ -93,6 +93,7 @@ def cli():
 			print()
 			sys.exit(0)
 		except EOFError as e:
+			print()
 			sys.exit(0)
 
 
