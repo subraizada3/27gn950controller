@@ -10,6 +10,7 @@ import re
 import sys
 
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 class Gui(QWidget):
@@ -69,19 +70,31 @@ class Gui(QWidget):
 
 		mainLayout.addWidget(QLabel(''))
 
-		editbuttonslayout = QGridLayout(self)
-		editbuttonslayout.addWidget(QLabel('<b>Edit static colors</b>'), 0, 0, 1, 4)
+		editbuttonsentrylayout = QHBoxLayout(self)
+		editbuttonsbuttonslayout = QHBoxLayout(self)
 		x = QLabel('Enter new color: ')
-		editbuttonslayout.addWidget(x, 1, 0, 1, 2)
+		editbuttonsentrylayout.addWidget(x)
 		self.colorInputBox = QLineEdit('27e5ff')
+		self.colorInputBox.setFixedWidth(150)
+		self.colorInputBox.setAlignment(Qt.AlignCenter)
+		font = QFont()
+		font.setFamily('Monospace')
+		font.setStyleHint(QFont.TypeWriter)
+		self.colorInputBox.setFont(font)
 		self.colorInputBox.textChanged.connect(self.validate_new_color)
-		editbuttonslayout.addWidget(self.colorInputBox, 1, 2, 1, 2)
-		self.colorValidationOutputBox = QLabel('Your entry is: valid')
-		editbuttonslayout.addWidget(self.colorValidationOutputBox, 2, 0, 1, 4)
+		editbuttonsentrylayout.addWidget(self.colorInputBox)
+		self.colorValidationOutputBox = QLabel('valid')
+		self.colorValidationOutputBox.setAlignment(Qt.AlignRight)
+		editbuttonsentrylayout.addWidget(self.colorValidationOutputBox)
 		for i in range(4):
 			x = QPushButton(f'Set {i+1}')
 			x.clicked.connect(lambda _, i=i: self.set_color(i+1))
-			editbuttonslayout.addWidget(x, 3, i)
+			editbuttonsbuttonslayout.addWidget(x)
+		editbuttonslayout = QVBoxLayout(self)
+
+		editbuttonslayout.addWidget(QLabel('<b>Edit static colors</b>'))
+		editbuttonslayout.addLayout(editbuttonsentrylayout)
+		editbuttonslayout.addLayout(editbuttonsbuttonslayout)
 		mainLayout.addLayout(editbuttonslayout)
 
 
@@ -116,8 +129,7 @@ class Gui(QWidget):
 		return re.match('^[0-9a-f]{6}$', color)
 
 	def validate_new_color(self, text):
-		s = 'Your entry is: '
-		s += 'valid' if self.is_valid_color(text.lower()) else 'invalid'
+		s = 'valid' if self.is_valid_color(text.lower()) else 'invalid'
 		self.colorValidationOutputBox.setText(s)
 
 
