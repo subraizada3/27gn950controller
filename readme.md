@@ -4,6 +4,9 @@ This program has the following benefits:
 - it supports controlling multiple monitors
 - it works on Linux and macOS
 - it's lightweight, fast, and has a good UI
+- it's free software
+
+![GPLv3 logo](gplv3.png)
 
 Video sync is currenty in development. All other functionality is supported.
 
