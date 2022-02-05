@@ -1,4 +1,4 @@
-This program lets you control the bias lighting LEDs on the LG 27GN950 monitor without needing to use the official LG software. This program has no affiliation with LG.
+This program lets you control the bias lighting LEDs on the LG 27GN950 and 38GN950 monitors without needing to use the official LG software. This program has no affiliation with LG.
 
 This program has the following benefits:
 - it supports controlling multiple monitors
@@ -10,7 +10,7 @@ This program has the following benefits:
 
 Video sync is currenty in development. All other functionality is supported.
 
-This project also provides a library that other applications can use to control 27GN950 monitors. See the `lib27gn950.py` file for details and documentation.
+This project also provides a library that other applications can use to control (27/38)GN950 monitors. See the `lib27gn950.py` file for details and documentation.
 
 ### Current status
 
