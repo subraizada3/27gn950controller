@@ -180,9 +180,21 @@ def send_video_sync_data(colors, dev):
 	if len(colors) != 48:
 		raise ValueError('send_video_sync_data: must provide 48 colors')
 
+	# each RGB component must be at least 1, otherwise the monitor can 'crash'
+	newcolors = []
+	for color in colors:
+		newcolor = ''
+		if color[0]==color[1]=='0': newcolor += '01'
+		else: newcolor += color[0:2]
+		if color[2]==color[3]=='0': newcolor += '01'
+		else: newcolor += color[2:4]
+		if color[4]==color[5]=='0': newcolor += '01'
+		else: newcolor += color[4:6]
+		newcolors.append(newcolor)
+
 	# generate the full command
 	cmd = '5343c1029100'
-	cmd += ''.join(colors)
+	cmd += ''.join(newcolors)
 	cmd += calc_crc(cmd)
 	cmd += '4544'
 
