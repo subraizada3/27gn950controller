@@ -190,6 +190,7 @@ class Gui(QWidget):
         print("Sync stopped")
         self.syncButton.clicked.disconnect()
         self.syncButton.clicked.connect(self.run_lightsync_prismatic)
+        self.set_peaceful_color()
   
     def stop_lightsync(self):
         if isinstance(self.thread,LightsyncPrismatic) :

@@ -77,4 +77,4 @@ class lightpack:
             rgb = re.findall(r"(\d+)-(\d+),(\d+),(\d+);", pixels or "")
             return rgb if rgb else None
         finally:
-            quit()
+            pass
