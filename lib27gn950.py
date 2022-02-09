@@ -16,7 +16,8 @@ import hid
 # find_monitors()
 #   Searches through HID devices and returns a list of dictionaries of the form:
 #     { 'path': hid_device_path,
-#       'serial': '010NTNHNL976' }
+#       'serial': '010NTNHNL976',
+#       'model': '38GL950G' }
 #   You can open a HID device like so:
 #     monitors = find_monitors()
 #     with hid.Device(path=monitors[0]['path']) as monitor0_dev:
@@ -139,16 +140,21 @@ def get_set_color_command(slot, color):
 ################################################################################
 
 
+vids_pids = {
+	(0x043e, 0x9a8a): '27GN950 / 38GN950',
+	(0x043e, 0x9a57): '38GL950G',
+}
 def find_monitors():
 	device_paths = []
 	for device in hid.enumerate():
 		vid = device['vendor_id']
 		pid = device['product_id']
 		usage_page = device['usage_page']
-		if vid == 0x043e and pid == 0x9a8a and usage_page == 0xff01:
+		if (vid, pid) in vids_pids.keys() and usage_page == 0xff01:
 			device_paths.append({
 				'path': device['path'],
-				'serial': device['serial_number']
+				'serial': device['serial_number'],
+				'model': vids_pids[(vid, pid)],
 			})
 	return device_paths
 

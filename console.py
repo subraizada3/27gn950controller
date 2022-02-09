@@ -68,7 +68,9 @@ def setup():
 		print('No monitors found')
 		sys.exit(0)
 	for monitor in monitors:
-		devs.append(hid.Device(path=monitor['path']))
+		dev = hid.Device(path=monitor['path'])
+		dev.model = monitor['model']
+		devs.append(dev)
 	selected = list(range(len(devs)))
 
 
@@ -163,7 +165,8 @@ def cli_process_line(text):
 			print(f'Monitors marked with * are currently selected')
 			print()
 			for i in range(len(devs)):
-				print(f'{"*" if i in selected else " "} {i+1}: serial number {devs[i].serial}')
+				print(f'{"* " if i in selected else "  "}', end='')
+				print(f'{i+1}: serial: {devs[i].serial}, model: {devs[i].model}')
 		print()
 
 	else:
