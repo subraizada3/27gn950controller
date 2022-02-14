@@ -140,21 +140,25 @@ def get_set_color_command(slot, color):
 ################################################################################
 
 
-vids_pids = {
-	(0x043e, 0x9a8a): '27GN950 / 38GN950',
-	(0x043e, 0x9a57): '38GL950G',
-}
+def is_valid_monitor(vid, pid, usage_page):
+	if vid == 0x043e and pid == 0x9a8a and usage_page == 0xff01:
+		return '27GN950 / 38GN950'
+	if vid == 0x043e and pid == 0x9a57:
+		return '38GL950G'
+	return False
+
 def find_monitors():
 	device_paths = []
 	for device in hid.enumerate():
 		vid = device['vendor_id']
 		pid = device['product_id']
 		usage_page = device['usage_page']
-		if (vid, pid) in vids_pids.keys() and usage_page == 0xff01:
+		model = is_valid_monitor(vid, pid, usage_page)
+		if model:
 			device_paths.append({
 				'path': device['path'],
 				'serial': device['serial_number'],
-				'model': vids_pids[(vid, pid)],
+				'model': model,
 			})
 	return device_paths
 
