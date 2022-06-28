@@ -246,10 +246,6 @@ def calc_crc(data):
 	crc = 0
 	for bit in data:
 		crc ^= bit
-		for _ in range(8):
-			crc <<= 1
-			if crc & 0x100:
-				crc ^= 0x101
 	# trim off the '0x' that hex() adds, and pad with a leading 0 if needed
 	crc = hex(crc)[2:]
 	if len(crc) == 1:
